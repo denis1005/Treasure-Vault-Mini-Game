@@ -3,6 +3,8 @@ let clicksClockwise = 0;
 let clicksCounterClockwise = 0;
 let EnterCounter=0
 let isOpen = false;
+let seconds = 0;
+let minutes = 0;
 
 
   const Application= PIXI.Application;
@@ -117,6 +119,23 @@ const backgroundTexture=PIXI.Texture.from('./images/bg.png')
    
  });
 
+// Adding timer
+const timerText = new PIXI.Text("0:00", {
+    fontSize: 32,
+    fill: 0xFF0000
+});
+timerText.x = app.screen.width / 3.42
+timerText.y = app.screen.height / 2.28
+timerText.width=40
+timerText.height=20
+app.stage.addChild(timerText);
+
+timer()
+
+
+
+
+
 // Generates a random secret combination
 function generateSecret() {
    let secret = [];
@@ -145,8 +164,9 @@ function RotateWheel(){
 
  // Clear game
 function clearGame(){
-
-   playerMoves=[];
+         seconds = 0;
+         minutes = 0;
+         playerMoves=[];
          EnterCounter=0;
          secret = generateSecret()
          console.clear()
@@ -166,6 +186,7 @@ function clearGame(){
    doorSprite.y = (app.view.height - doorSprite.height)-110;
    app.stage.removeChild(handleSprite);
    blinkerAnimation();
+   app.ticker.remove(updateTimer);
  }
 
  // Check player moves
@@ -240,4 +261,26 @@ function blinkerAnimation(){
        }
      }
    });
+ }
+
+
+ // Adding timer
+ function timer(){
+
+// Create a function to update the timer
+const updateTimer = (delta) => {
+    seconds += delta;
+
+    if (seconds >= 60) {
+        minutes++;
+        seconds = 0;
+    }
+
+    const formattedSeconds = seconds < 10 ? `0${Math.floor(seconds)}` : Math.floor(seconds);
+    timerText.text = `${minutes}:${formattedSeconds}`;
+};
+
+// Add the updateTimer function to the ticker
+   app.ticker.add(updateTimer);
+
  }
