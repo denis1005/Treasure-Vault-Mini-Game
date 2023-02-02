@@ -1,6 +1,6 @@
 <p align="center">
 
-  ![Home]![Capture](https://user-images.githubusercontent.com/19151979/216472202-d6a90e16-2aeb-4459-8b4d-0ca1aecd04ef.PNG)
+ ![Capture](https://user-images.githubusercontent.com/19151979/216472202-d6a90e16-2aeb-4459-8b4d-0ca1aecd04ef.PNG)
 
 </p>
 
