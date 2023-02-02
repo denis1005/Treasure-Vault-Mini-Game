@@ -1,3 +1,7 @@
+let playerMoves=[];
+let clicksClockwise = 0;
+let clicksCounterClockwise = 0;
+
 
   const Application= PIXI.Application;
   const app=new Application({
@@ -49,6 +53,31 @@ const backgroundTexture=PIXI.Texture.from('./images/bg.png')
   handleSprite.interactive=true;
   handleSprite.anchor.set(0.5);
 
+  // Key functionality 
+  document.addEventListener("keydown", function(event) {
+   if (event.code === "ArrowLeft") {
+     if(clicksCounterClockwise<9){
+       handleSprite.rotation += 0.6;
+       clicksCounterClockwise++;
+     }else {
+       clicksCounterClockwise=0;
+       RotateWheel()
+     }
+    
+   }
+   if (event.code === "ArrowRight") {
+     
+     if(clicksClockwise<9){
+       handleSprite.rotation -= 0.6;
+       clicksClockwise++;
+     }else{
+       clicksClockwise=0;
+       RotateWheel()
+     }
+     
+   }
+   
+ });
 
 // Generates a random secret combination
 function generateSecret() {
@@ -61,6 +90,17 @@ function generateSecret() {
    return secret;
  }
 
-
-  
-  
+ //Rotate Wheel
+function RotateWheel(){
+   let ticker = PIXI.Ticker.shared;
+ 
+   ticker.add((delta) => {
+     handleSprite.rotation += delta;
+     setTimeout(()=>{
+       handleSprite.rotation=0;
+       ticker.stop();
+       
+       
+     },300)
+ });
+ }
