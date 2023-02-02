@@ -36,6 +36,19 @@ const backgroundTexture=PIXI.Texture.from('./images/bg.png')
   doorSprite.x = (app.view.width - doorSprite.width) / 2;
   doorSprite.y = (app.view.height - doorSprite.height) / 2;
 
+  // Adding handle
+
+  const handleTexture=PIXI.Texture.from('./images/handle.png')
+  const handleSprite=new PIXI.Sprite(handleTexture);
+  app.stage.addChild(handleSprite)
+
+  handleSprite.width = doorSprite.width/3;
+  handleSprite.height = doorSprite.height/3;
+  handleSprite.x = (app.view.width  - handleSprite.width) / 1.83;
+  handleSprite.y = (app.view.height - handleSprite.height) / 1.59;
+  handleSprite.interactive=true;
+  handleSprite.anchor.set(0.5);
+
 
 // Generates a random secret combination
 function generateSecret() {
