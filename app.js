@@ -55,6 +55,25 @@ const backgroundTexture=PIXI.Texture.from('./images/bg.png')
   handleSprite.interactive=true;
   handleSprite.anchor.set(0.5);
 
+  //Adding blinks 
+  const blinkTexture=PIXI.Texture.from('./images/blink.png')
+  const fistBlink=new PIXI.Sprite(blinkTexture);
+  const secondBlink=new PIXI.Sprite(blinkTexture);
+  const thirdBlink=new PIXI.Sprite(blinkTexture);
+  // Positioning blinks
+  fistBlink.height=150;
+  fistBlink.width=150;
+  fistBlink.position.x=(app.view.width  - 2*fistBlink.width )/2;
+  fistBlink.position.y=(app.view.height  - fistBlink.height)/2;
+  secondBlink.height=150;
+  secondBlink.width=150;
+  secondBlink.position.x=(app.view.width  - 1.5*secondBlink.width )/2;
+  secondBlink.position.y=(app.view.height )/2;
+  thirdBlink.height=100;
+  thirdBlink.width=100;
+  thirdBlink.position.x=(app.view.width)/2;
+  thirdBlink.position.y=(app.view.height)/2;
+
   // Key functionality 
   document.addEventListener("keydown", function(event) {
    if (event.code === "ArrowLeft") {
