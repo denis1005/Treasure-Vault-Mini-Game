@@ -1,6 +1,8 @@
 let playerMoves=[];
 let clicksClockwise = 0;
 let clicksCounterClockwise = 0;
+let EnterCounter=0
+let isOpen = false;
 
 
   const Application= PIXI.Application;
@@ -74,8 +76,25 @@ const backgroundTexture=PIXI.Texture.from('./images/bg.png')
        clicksClockwise=0;
        RotateWheel()
      }
+    
      
    }
+   if (event.code === "Enter") {
+      checkPlayerMoves()
+      clearHandleRotation()
+      console.log(playerMoves);
+      EnterCounter++
+      if(playerMoves.length==3){
+        if(arraysEqual(playerMoves,secret)){
+          console.log('Success!!!')
+          OpenSafe()
+       }else{
+        clearGame()
+       }
+      }
+      
+    }
+   
    
  });
 
@@ -103,4 +122,55 @@ function RotateWheel(){
        
      },300)
  });
+ }
+
+ // Clear game
+function clearGame(){
+
+   playerMoves=[];
+         EnterCounter=0;
+         secret = generateSecret()
+         console.clear()
+         console.log("Wrong combination");
+         console.log("The secret combination is:", secret);
+         RotateWheel()
+   
+ }
+ 
+ //Open Safe
+ function OpenSafe(){
+ 
+   doorSprite.texture=doorOpenTexture
+   doorSprite.width = backgroundSprite.width/3;
+   doorSprite.height = backgroundSprite.height/1.5;
+   doorSprite.x = (app.view.width - doorSprite.width) -40 ;
+   doorSprite.y = (app.view.height - doorSprite.height)-110;
+   app.stage.removeChild(handleSprite);
+ }
+
+ // Check player moves
+function checkPlayerMoves(){
+   if (clicksClockwise>0 && clicksCounterClockwise==0 ) {
+     playerMoves.push({number:clicksClockwise,direction:'clockwise'})
+     
+   }else if (clicksCounterClockwise>0 && clicksClockwise==0){
+     playerMoves.push({number:clicksCounterClockwise,direction:'counterclockwise'})
+   }else if(clicksClockwise>0 && clicksCounterClockwise>0 ){
+     if(clicksClockwise - clicksCounterClockwise>0){
+       playerMoves.push({number:clicksClockwise - clicksCounterClockwise,direction:'clockwise'})
+     }else{
+       playerMoves.push({number:clicksCounterClockwise - clicksClockwise,direction:'counterclockwise'})
+     }
+   }
+ }
+ 
+ // Clear the handle rotation
+ function clearHandleRotation(){
+   handleSprite.rotation = 0;
+   clicksClockwise = 0;
+   clicksCounterClockwise = 0;
+ }
+
+ function arraysEqual(a, b) {
+   return JSON.stringify(a) === JSON.stringify(b);
  }
