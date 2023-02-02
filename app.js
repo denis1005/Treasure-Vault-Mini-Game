@@ -165,6 +165,7 @@ function clearGame(){
    doorSprite.x = (app.view.width - doorSprite.width) -40 ;
    doorSprite.y = (app.view.height - doorSprite.height)-110;
    app.stage.removeChild(handleSprite);
+   blinkerAnimation();
  }
 
  // Check player moves
@@ -192,4 +193,51 @@ function checkPlayerMoves(){
 
  function arraysEqual(a, b) {
    return JSON.stringify(a) === JSON.stringify(b);
+ }
+
+ //Animation Function
+function blinkerAnimation(){
+   app.stage.addChild(fistBlink, secondBlink, thirdBlink);
+   let ticker2 = PIXI.Ticker.shared;
+   let timer1 = 0, timer2 = 0, timer3 = 0;
+   let duration1 = Math.random() * 5 + 2, duration2 = Math.random() * 5 + 2, duration3 = Math.random() * 5 + 2;
+  
+   app.ticker.add((delta) => {
+     timer1 += delta;
+     timer2 += delta;
+     timer3 += delta;
+   
+     if (timer1 > duration1) {
+       timer1 = 0;
+       duration1 = Math.random() * 5 + 2;
+   
+       if (Math.random() > 0.5) {
+         app.stage.addChild(fistBlink);
+       } else {
+         app.stage.removeChild(fistBlink);
+       }
+     }
+   
+     if (timer2 > duration2) {
+       timer2 = 0;
+       duration2 = Math.random() * 5 + 2;
+   
+       if (Math.random() > 0.5) {
+         app.stage.addChild(secondBlink);
+       } else {
+         app.stage.removeChild(secondBlink);
+       }
+     }
+   
+     if (timer3 > duration3) {
+       timer3 = 0;
+       duration3 = Math.random() * 5 + 2;
+   
+       if (Math.random() > 0.5) {
+         app.stage.addChild(thirdBlink);
+       } else {
+         app.stage.removeChild(thirdBlink);
+       }
+     }
+   });
  }
