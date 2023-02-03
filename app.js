@@ -6,50 +6,57 @@ let isOpen = false;
 let seconds = 0;
 let minutes = 0;
 
-
+// Initial setup
 const Application = PIXI.Application;
 const app = new Application({
   width: window.innerWidth,
   height: window.innerHeight,
   transparent: true,
-})
+});
+document.body.appendChild(app.view);
 
-document.body.appendChild(app.view)
 
 let secret = generateSecret();
 console.log("The secret combination is:", secret);
 
-const backgroundTexture = PIXI.Texture.from('./images/bg.png')
+// Adding and positioning background
+const backgroundTexture = PIXI.Texture.from('./images/bg.png');
 const backgroundSprite = new PIXI.Sprite(backgroundTexture);
-app.stage.addChild(backgroundSprite)
-
+app.stage.addChild(backgroundSprite);
 backgroundSprite.width = app.view.width;
 backgroundSprite.height = app.view.height;
-
-// Center the background on the screen
 backgroundSprite.x = (app.view.width - backgroundSprite.width) / 2;
 backgroundSprite.y = (app.view.height - backgroundSprite.height) / 2;
 
 
-//Creating Door Open texture
-const doorOpenTexture = PIXI.Texture.from('./images/doorOpen.png')
-//Creating Adding door
-const doorCloseTexture = PIXI.Texture.from('./images/door.png')
-
+//Adding Door Open/Close 
+const doorOpenTexture = PIXI.Texture.from('./images/doorOpen.png');
+const doorCloseTexture = PIXI.Texture.from('./images/door.png');
 let doorSprite = new PIXI.Sprite(doorCloseTexture);
-app.stage.addChild(doorSprite)
-
+app.stage.addChild(doorSprite);
 doorSprite.width = backgroundSprite.width / 3;
 doorSprite.height = backgroundSprite.height / 1.5;
 doorSprite.x = (app.view.width - doorSprite.width) / 2;
 doorSprite.y = (app.view.height - doorSprite.height) / 2;
 
+
+// Adding handle shadow
+const handleShadowTexture = PIXI.Texture.from('./images/handleShadow.png');
+const handleShadowSprite = new PIXI.Sprite(handleShadowTexture);
+app.stage.addChild(handleShadowSprite);
+handleShadowSprite.width = doorSprite.width / 3;
+handleShadowSprite.height = doorSprite.height / 3;
+handleShadowSprite.x = (app.view.width - handleShadowSprite.width+10) / 1.83;
+handleShadowSprite.y = (app.view.height - handleShadowSprite.height+10) / 1.59;
+handleShadowSprite.interactive = true;
+handleShadowSprite.anchor.set(0.5);
+
+
+
 // Adding handle
-
-const handleTexture = PIXI.Texture.from('./images/handle.png')
+const handleTexture = PIXI.Texture.from('./images/handle.png');
 const handleSprite = new PIXI.Sprite(handleTexture);
-app.stage.addChild(handleSprite)
-
+app.stage.addChild(handleSprite);
 handleSprite.width = doorSprite.width / 3;
 handleSprite.height = doorSprite.height / 3;
 handleSprite.x = (app.view.width - handleSprite.width) / 1.83;
@@ -57,12 +64,12 @@ handleSprite.y = (app.view.height - handleSprite.height) / 1.59;
 handleSprite.interactive = true;
 handleSprite.anchor.set(0.5);
 
-//Adding blinks 
-const blinkTexture = PIXI.Texture.from('./images/blink.png')
+
+//Adding and positioning blinks
+const blinkTexture = PIXI.Texture.from('./images/blink.png');
 const fistBlink = new PIXI.Sprite(blinkTexture);
 const secondBlink = new PIXI.Sprite(blinkTexture);
 const thirdBlink = new PIXI.Sprite(blinkTexture);
-// Positioning blinks
 fistBlink.height = 150;
 fistBlink.width = 150;
 fistBlink.position.x = (app.view.width - 2 * fistBlink.width) / 2;
@@ -76,11 +83,13 @@ thirdBlink.width = 100;
 thirdBlink.position.x = (app.view.width) / 2;
 thirdBlink.position.y = (app.view.height) / 2;
 
-// Key functionality 
+
+// Keys functionality 
 document.addEventListener("keydown", function (event) {
   if (event.code === "ArrowLeft") {
     if (clicksCounterClockwise < 9) {
       handleSprite.rotation += 0.6;
+      handleShadowSprite.rotation+= 0.6;
       clicksCounterClockwise++;
     } else {
       clicksCounterClockwise = 0;
@@ -92,6 +101,7 @@ document.addEventListener("keydown", function (event) {
 
     if (clicksClockwise < 9) {
       handleSprite.rotation -= 0.6;
+      handleShadowSprite.rotation-= 0.6;
       clicksClockwise++;
     } else {
       clicksClockwise = 0;
@@ -119,6 +129,7 @@ document.addEventListener("keydown", function (event) {
 
 });
 
+
 // Adding timer
 const timerText = new PIXI.Text("0:00", {
   fontSize: 32,
@@ -143,7 +154,6 @@ const updateTimer = (delta) => {
 app.ticker.add(updateTimer);
 
 
-// Generates a random secret combination
 function generateSecret() {
   let secret = [];
   for (let i = 0; i < 3; i++) {
@@ -154,14 +164,15 @@ function generateSecret() {
   return secret;
 }
 
-//Rotate Wheel
 function RotateWheel() {
   let ticker = PIXI.Ticker.shared;
 
   ticker.add((delta) => {
+    handleShadowSprite.rotation+= delta;
     handleSprite.rotation += delta;
     setTimeout(() => {
-      handleSprite.rotation = 0;
+      handleSprite.rotation=0;
+      handleShadowSprite.rotation=0;
       ticker.stop();
 
 
@@ -169,7 +180,6 @@ function RotateWheel() {
   });
 }
 
-// Clear game
 function clearGame() {
   seconds = 0;
   minutes = 0;
@@ -183,20 +193,22 @@ function clearGame() {
 
 }
 
-//Open Safe
 function OpenSafe() {
 
+  // Positioning Door Open
   doorSprite.texture = doorOpenTexture
-  doorSprite.width = backgroundSprite.width / 3;
-  doorSprite.height = backgroundSprite.height / 1.5;
-  doorSprite.x = (app.view.width - doorSprite.width) - 40;
-  doorSprite.y = (app.view.height - doorSprite.height) - 110;
+  doorSprite.width = doorSprite.width/1.8;
+  doorSprite.height =doorSprite.height;
+  doorSprite.x = (app.view.width - doorSprite.width) - 270;
+  doorSprite.y = (app.view.height - doorSprite.height) - 130;
   app.stage.removeChild(handleSprite);
+  app.stage.removeChild(handleShadowSprite);
   blinkerAnimation();
   app.ticker.remove(updateTimer);
+  
+    
 }
 
-// Check player moves
 function checkPlayerMoves() {
   if (clicksClockwise > 0 && clicksCounterClockwise == 0) {
     playerMoves.push({ number: clicksClockwise, direction: 'clockwise' })
@@ -212,9 +224,9 @@ function checkPlayerMoves() {
   }
 }
 
-// Clear the handle rotation
 function clearHandleRotation() {
   handleSprite.rotation = 0;
+  handleShadowSprite.rotation = 0;
   clicksClockwise = 0;
   clicksCounterClockwise = 0;
 }
@@ -223,7 +235,6 @@ function arraysEqual(a, b) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
-//Animation Function
 function blinkerAnimation() {
   app.stage.addChild(fistBlink, secondBlink, thirdBlink);
   let ticker2 = PIXI.Ticker.shared;
