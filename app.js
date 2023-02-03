@@ -6,6 +6,8 @@ let isOpen = false;
 let seconds = 0;
 let minutes = 0;
 
+let blinkTicker=new PIXI.Ticker()
+
 // Initial setup
 const Application = PIXI.Application;
 const app = new Application({
@@ -119,6 +121,10 @@ document.addEventListener("keydown", function (event) {
       if (arraysEqual(playerMoves, secret)) {
         console.log('Success!!!')
         OpenSafe()
+        setTimeout(()=>{
+          clearGame()
+          closeSafe()
+        },5000)
       } else {
         clearGame()
       }
@@ -187,7 +193,6 @@ function clearGame() {
   EnterCounter = 0;
   secret = generateSecret()
   console.clear()
-  console.log("Wrong combination");
   console.log("The secret combination is:", secret);
   RotateWheel()
 
@@ -207,6 +212,19 @@ function OpenSafe() {
   app.ticker.remove(updateTimer);
   
     
+}
+
+function closeSafe(){
+  doorSprite.texture=doorCloseTexture;
+  doorSprite.width = backgroundSprite.width / 3;
+  doorSprite.height = backgroundSprite.height / 1.5;
+  doorSprite.x = (app.view.width - doorSprite.width) / 2;
+  doorSprite.y = (app.view.height - doorSprite.height) / 2;
+  app.stage.addChild(handleShadowSprite);
+  app.stage.addChild(handleSprite);
+  app.stage.removeChild(fistBlink, secondBlink, thirdBlink);
+  app.ticker.add(updateTimer);
+  blinkTicker.stop();
 }
 
 function checkPlayerMoves() {
@@ -237,11 +255,10 @@ function arraysEqual(a, b) {
 
 function blinkerAnimation() {
   app.stage.addChild(fistBlink, secondBlink, thirdBlink);
-  let ticker2 = PIXI.Ticker.shared;
   let timer1 = 0, timer2 = 0, timer3 = 0;
   let duration1 = Math.random() * 5 + 2, duration2 = Math.random() * 5 + 2, duration3 = Math.random() * 5 + 2;
 
-  app.ticker.add((delta) => {
+  blinkTicker.add((delta) => {
     timer1 += delta;
     timer2 += delta;
     timer3 += delta;
@@ -279,4 +296,5 @@ function blinkerAnimation() {
       }
     }
   });
+  blinkTicker.start();
 }
